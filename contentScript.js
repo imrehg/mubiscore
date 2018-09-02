@@ -53,25 +53,37 @@ function getRating(title, year, item, apikey, hero) {
       xhr.open(
         "GET",
         `https://www.omdbapi.com/?t=${encodedTitle}&y=${year}&apikey=${apikey}`,
-        false
+        true
       );
-      xhr.send();
-      var result = JSON.parse(xhr.responseText);
-      if (
-        result.Response !== "False" &&
-        result.Ratings &&
-        result.Ratings.length > 0
-      ) {
-        console.log(result.Ratings);
-        var ratingStored = {};
-        ratingStored[moviekey] = result.Ratings;
-        chrome.storage.local.set(ratingStored, function() {
-          console.log(
-            "Value is set to " + JSON.stringify(ratingStored, null, 2)
-          );
-        });
-        showRating(result.Ratings, item, hero);
-      }
+
+      xhr.onload = function(e) {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            var result = JSON.parse(xhr.responseText);
+            if (
+              result.Response !== "False" &&
+              result.Ratings &&
+              result.Ratings.length > 0
+            ) {
+              console.log(result.Ratings);
+              var ratingStored = {};
+              ratingStored[moviekey] = result.Ratings;
+              chrome.storage.local.set(ratingStored, function() {
+                console.log(
+                  "Value is set to " + JSON.stringify(ratingStored, null, 2)
+                );
+              });
+              showRating(result.Ratings, item, hero);
+            }
+          } else {
+            console.error(xhr.statusText);
+          }
+        }
+      };
+      xhr.onerror = function(e) {
+        console.error(xhr.statusText);
+      };
+      xhr.send(null);
     } else {
       console.log(`Rating found for ${moviekey} in local storage!`);
       showRating(items[moviekey], item, hero);
