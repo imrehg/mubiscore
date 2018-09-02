@@ -1,0 +1,10 @@
+div.ratings {
+    padding-top: 20px;
+}
+
+span.ratings-header {
+    font-weight: bold;
+}
+span.rating-source {
+    font-weight: bold;
+}

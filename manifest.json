@@ -1,0 +1,21 @@
+{
+  "name": "Mubi Score",
+  "version": "1.0",
+  "description": "Add movie scores to Mubi",
+  "permissions": [
+        "storage",
+          "https://www.omdbapi.com/*"
+      ],
+  "manifest_version": 2,
+  "page_action": {
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": ["https://mubi.com/showing"],
+      "css": ["content.css"],
+      "js": ["contentScript.js"]
+    }
+  ]
+}
