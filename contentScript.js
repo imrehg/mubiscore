@@ -20,14 +20,28 @@ function main() {
             )[0]
             .innerHTML.split(",");
           const year = countryYear[1].trim();
-          getRating(title, year, item, apikey);
+          getRating(title, year, item, apikey, false);
         }
+        // process the hero item
+        const hero = document.getElementsByClassName(
+          "showing-page-hero-tile"
+        )[0];
+        const heroTitle = hero.getElementsByClassName(
+          "showing-page-hero-tile__title"
+        )[0].innerHTML;
+        const heroCountryYear = hero
+          .getElementsByClassName(
+            "now-showing-tile-director-year__year-country"
+          )[0]
+          .innerHTML.split(",");
+        const heroYear = heroCountryYear[1].trim();
+        getRating(heroTitle, heroYear, hero, apikey, true);
       }
     }
   );
 }
 
-function getRating(title, year, item, apikey) {
+function getRating(title, year, item, apikey, hero) {
   const moviekey = `${title} / ${year}`;
   var query = {};
   query[moviekey] = "";
@@ -56,16 +70,16 @@ function getRating(title, year, item, apikey) {
             "Value is set to " + JSON.stringify(ratingStored, null, 2)
           );
         });
-        showRating(result.Ratings, item);
+        showRating(result.Ratings, item, hero);
       }
     } else {
       console.log(`Rating found for ${moviekey} in local storage!`);
-      showRating(items[moviekey], item);
+      showRating(items[moviekey], item, hero);
     }
   });
 }
 
-function showRating(ratings, item) {
+function showRating(ratings, item, hero) {
   console.log(ratings);
   if (ratings !== null) {
     var div = document.createElement("div");
@@ -78,8 +92,15 @@ function showRating(ratings, item) {
       }</span>: <span class="rating-value">${ratings[j].Value}</span>`;
       div.appendChild(rating);
     }
-    var target = item.getElementsByClassName("full-width-tile__our-take")[0];
-    target.appendChild(div);
+    if (hero) {
+      item
+        .getElementsByClassName("showing-page-hero-tile__our-take")[0]
+        .appendChild(div);
+    } else {
+      item
+        .getElementsByClassName("full-width-tile__our-take")[0]
+        .appendChild(div);
+    }
   }
 }
 
