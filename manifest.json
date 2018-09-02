@@ -2,10 +2,7 @@
   "name": "Mubi Score",
   "version": "0.1",
   "description": "Add movie scores to Mubi's Now Showing page.",
-  "permissions": [
-        "storage",
-          "https://www.omdbapi.com/*"
-      ],
+  "permissions": ["storage", "https://www.omdbapi.com/*"],
   "manifest_version": 2,
   "options_page": "options.html",
   "content_scripts": [
