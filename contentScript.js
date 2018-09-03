@@ -11,7 +11,6 @@ function main() {
         );
         for (var i = 0, max = all.length; i < max; i++) {
           const item = all[i];
-          // console.log(item);
           const title = item.getElementsByClassName("full-width-tile__title")[0]
             .innerHTML;
           const countryYear = item
@@ -65,7 +64,6 @@ function getRating(title, year, item, apikey, hero) {
               result.Ratings &&
               result.Ratings.length > 0
             ) {
-              console.log(result.Ratings);
               var ratingStored = {};
               ratingStored[moviekey] = result.Ratings;
               chrome.storage.local.set(ratingStored, function() {
@@ -92,7 +90,6 @@ function getRating(title, year, item, apikey, hero) {
 }
 
 function showRating(ratings, item, hero) {
-  console.log(ratings);
   if (ratings !== null) {
     var div = document.createElement("div");
     div.setAttribute("class", "ratings");
