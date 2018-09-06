@@ -1,10 +1,12 @@
-div.ratings {
+div.ratings,
+div.warning
+{
   padding-top: 20px;
 }
 
-span.ratings-header {
-  font-weight: bold;
-}
-span.rating-source {
+span.rating-source,
+span.ratings-header,
+span.warning
+{
   font-weight: bold;
 }
