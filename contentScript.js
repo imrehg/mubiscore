@@ -102,7 +102,7 @@ function getRatingHeader() {
   if (ratingHeaders[mainLanguage]) {
     var header = document.createElement("span");
     header.setAttribute("class", "ratings-header");
-    header.innerHTML = `${ratingHeaders[mainLanguage]}:`;
+    header.innerText = `${ratingHeaders[mainLanguage]}:`;
     return header;
   }
 }
@@ -118,7 +118,16 @@ function showRating(ratings, item) {
     }
     for (var j = 0, numratings = ratings.length; j < numratings; j++) {
       var rating = document.createElement("div");
-      rating.innerHTML = `<span class="rating-source">${ratings[j].Source}</span>: <span class="rating-value">${ratings[j].Value}</span>`;
+
+      var source = document.createElement("span");
+      source.setAttribute("class", "rating-source");
+      source.innerText = `${ratings[j].Source}: `
+      rating.appendChild(source)
+
+      var value = document.createElement("span");
+      value.setAttribute("class", "rating-value");
+      value.innerText = `${ratings[j].Value}:`
+      rating.appendChild(value)
       div.appendChild(rating);
     }
     item.querySelector("p").appendChild(div);
@@ -136,8 +145,10 @@ function showWarning() {
   const hero = document.getElementsByTagName("article")[0];
   var div = document.createElement("div");
   div.setAttribute("class", "warning");
-  div.innerHTML =
-    '<span class="warning">⚠️To show movie ratings, please add an OMDb key in the MubiScore options page!⚠️';
+  var warning = document.createElement("span");
+  warning.setAttribute("class", "warning");
+  warning.innerText ="⚠️To show movie ratings, please add an OMDb key in the MubiScore options page!⚠️"
+  div.appendChild(warning)
   hero.querySelector("p").appendChild(div);
 }
 
