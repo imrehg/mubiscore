@@ -3,64 +3,53 @@
 function main() {
   browser.storage.sync
     .get({
-      apikey: ""
+      apikey: "",
     })
     .then(setupQueries);
+}
+
+function parseArticle(article) {
+  const titleHeader = article.querySelector("div > div > h2");
+  const title = titleHeader ? titleHeader.innerText : undefined;
+  const countryYear = article.querySelector(
+    "div > div > h3 > span:nth-child(2)"
+  );
+  const year = countryYear
+    ? countryYear.innerText.split(",")[1].trim()
+    : undefined;
+  return { title: title, year: year };
 }
 
 function setupQueries(storageData) {
   const apikey = storageData.apikey;
   if (apikey !== "") {
-    const all = document.getElementsByClassName("full-width-tile--now-showing");
-    for (var i = 0, max = all.length; i < max; i++) {
-      const item = all[i];
-      const title = item.getElementsByClassName("full-width-tile__title")[0]
-        .innerHTML;
-      const countryYear = item
-        .getElementsByClassName(
-          "now-showing-tile-director-year__year-country"
-        )[0]
-        .innerHTML.split(",");
-      const year = countryYear[1].trim();
-      getRating(title, year, item, apikey, false);
+    const all_articles = document.getElementsByTagName("article");
+    for (var i = 0, max = all_articles.length; i < max; i++) {
+      const item = all_articles[i];
+      const film = parseArticle(item);
+      if (film.title && film.year) {
+        getRating(film.title, film.year, item, apikey, false);
+      }
     }
-    // process the hero item
-    const hero = document.getElementsByClassName("showing-page-hero-tile")[0];
-    const heroTitle = hero.getElementsByClassName(
-      "showing-page-hero-tile__title"
-    )[0].innerHTML;
-    const heroCountryYear = hero
-      .getElementsByClassName("now-showing-tile-director-year__year-country")[0]
-      .innerHTML.split(",");
-    const heroYear = heroCountryYear[1].trim();
-    getRating(heroTitle, heroYear, hero, apikey, true);
   } else {
     showWarning();
   }
 }
 
-function getRating(title, year, item, apikey, hero) {
+function getRating(title, year, item, apikey) {
   const moviekey = `${title} / ${year}`;
   var query = {};
   query[moviekey] = "";
   browser.storage.local
     .get(query)
-    .then(localData =>
-      processMovieData(localData, moviekey, title, year, apikey, item, hero)
+    .then((localData) =>
+      processMovieData(localData, moviekey, title, year, apikey, item)
     );
 }
 
-function processMovieData(
-  localData,
-  moviekey,
-  title,
-  year,
-  apikey,
-  item,
-  hero
-) {
+function processMovieData(localData, moviekey, title, year, apikey, item) {
   if (localData[moviekey] === "") {
-    console.log(`No rating found for ${moviekey} in local storage.`);
+    console.debug(`No rating found for ${moviekey} in local storage.`);
     const encodedTitle = encodeURIComponent(title);
     var xhr = new XMLHttpRequest();
     xhr.open(
@@ -69,7 +58,7 @@ function processMovieData(
       true
     );
 
-    xhr.onload = function(e) {
+    xhr.onload = function (e) {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
           var result = JSON.parse(xhr.responseText);
@@ -83,7 +72,7 @@ function processMovieData(
             browser.storage.local
               .set(ratingStored)
               .then(setItem(moviekey), onError);
-            showRating(result.Ratings, item, hero);
+            showRating(result.Ratings, item);
           }
         } else if (xhr.status === 401) {
           console.error("OMDb API key seems to be invalid...");
@@ -92,37 +81,47 @@ function processMovieData(
         }
       }
     };
-    xhr.onerror = function(e) {
+    xhr.onerror = function (e) {
       console.error(xhr.statusText);
     };
     xhr.send(null);
   } else {
-    console.log(`Rating found for ${moviekey} in local storage!`);
-    showRating(localData[moviekey], item, hero);
+    console.debug(`Rating found for ${moviekey} in local storage!`);
+    showRating(localData[moviekey], item);
   }
 }
 
-function showRating(ratings, item, hero) {
+const ratingHeaders = {
+  en: "Ratings",
+  fr: "Évaluations",
+  de: "Bewertungen",
+};
+function getRatingHeader() {
+  const language = document.documentElement.lang;
+  const mainLanguage = language.split("-")[0];
+  if (ratingHeaders[mainLanguage]) {
+    var header = document.createElement("span");
+    header.setAttribute("class", "ratings-header");
+    header.innerHTML = `${ratingHeaders[mainLanguage]}:`;
+    return header;
+  }
+}
+
+function showRating(ratings, item) {
   if (ratings !== null) {
     var div = document.createElement("div");
     div.setAttribute("class", "ratings");
-    div.innerHTML = '<span class="ratings-header">Ratings:</span>';
+    console.log(document.documentElement.lang);
+    const header = getRatingHeader();
+    if (header) {
+      div.appendChild(header);
+    }
     for (var j = 0, numratings = ratings.length; j < numratings; j++) {
       var rating = document.createElement("div");
-      rating.innerHTML = `<span class="rating-source">${
-        ratings[j].Source
-      }</span>: <span class="rating-value">${ratings[j].Value}</span>`;
+      rating.innerHTML = `<span class="rating-source">${ratings[j].Source}</span>: <span class="rating-value">${ratings[j].Value}</span>`;
       div.appendChild(rating);
     }
-    if (hero) {
-      item
-        .getElementsByClassName("showing-page-hero-tile__our-take")[0]
-        .appendChild(div);
-    } else {
-      item
-        .getElementsByClassName("full-width-tile__our-take")[0]
-        .appendChild(div);
-    }
+    item.querySelector("p").appendChild(div);
   }
 }
 
@@ -130,18 +129,16 @@ function setItem(movie) {
   console.log(`Rating saved OK: ${movie}`);
 }
 function onError(error) {
-  console.log(error);
+  console.error(error);
 }
 
 function showWarning() {
-  const hero = document.getElementsByClassName("showing-page-hero-tile")[0];
+  const hero = document.getElementsByTagName("article")[0];
   var div = document.createElement("div");
   div.setAttribute("class", "warning");
   div.innerHTML =
-    '<span class="warning">To show movie ratings, please add an OMDb key in the MubiScore options page!';
-  hero
-    .getElementsByClassName("showing-page-hero-tile__our-take")[0]
-    .appendChild(div);
+    '<span class="warning">⚠️To show movie ratings, please add an OMDb key in the MubiScore options page!⚠️';
+  hero.querySelector("p").appendChild(div);
 }
 
 main();

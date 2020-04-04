@@ -1,6 +1,6 @@
 {
   "name": "Mubi Score",
-  "version": "0.2",
+  "version": "0.4",
   "author": "Gergely Imreh",
   "developer": {
     "name": "Gergely Imreh",
@@ -25,7 +25,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://mubi.com/showing"],
+      "matches": ["https://mubi.com/showing", "https://mubi.com/*/showing"],
       "run_at": "document_idle",
       "css": ["content.css"],
       "js": ["browser-polyfill.js", "contentScript.js"]
