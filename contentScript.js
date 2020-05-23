@@ -126,7 +126,7 @@ function showRating(ratings, item) {
 
       var value = document.createElement("span");
       value.setAttribute("class", "rating-value");
-      value.innerText = `${ratings[j].Value}:`
+      value.innerText = `${ratings[j].Value}`
       rating.appendChild(value)
       div.appendChild(rating);
     }
