@@ -1,12 +1,10 @@
 div.ratings,
-div.warning
-{
+div.warning {
   padding-top: 20px;
 }
 
 span.rating-source,
 span.ratings-header,
-span.warning
-{
+span.warning {
   font-weight: bold;
 }

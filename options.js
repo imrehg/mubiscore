@@ -2,7 +2,7 @@ function save_options() {
   var apikey = document.getElementById("apikey").value;
   browser.storage.sync
     .set({
-      apikey: apikey
+      apikey: apikey,
     })
     .then(setItem);
 }
@@ -11,7 +11,7 @@ function setItem() {
   // Update status to let user know options were saved.
   var status = document.getElementById("status");
   status.textContent = "Options saved.";
-  setTimeout(function() {
+  setTimeout(function () {
     status.textContent = "";
   }, 2000);
 }
@@ -19,9 +19,9 @@ function setItem() {
 function restore_options() {
   browser.storage.sync
     .get({
-      apikey: ""
+      apikey: "",
     })
-    .then(items => {
+    .then((items) => {
       document.getElementById("apikey").value = items.apikey;
     });
 }

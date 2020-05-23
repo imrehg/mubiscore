@@ -121,13 +121,13 @@ function showRating(ratings, item) {
 
       var source = document.createElement("span");
       source.setAttribute("class", "rating-source");
-      source.innerText = `${ratings[j].Source}: `
-      rating.appendChild(source)
+      source.innerText = `${ratings[j].Source}: `;
+      rating.appendChild(source);
 
       var value = document.createElement("span");
       value.setAttribute("class", "rating-value");
-      value.innerText = `${ratings[j].Value}`
-      rating.appendChild(value)
+      value.innerText = `${ratings[j].Value}`;
+      rating.appendChild(value);
       div.appendChild(rating);
     }
     item.querySelector("p").appendChild(div);
@@ -147,8 +147,9 @@ function showWarning() {
   div.setAttribute("class", "warning");
   var warning = document.createElement("span");
   warning.setAttribute("class", "warning");
-  warning.innerText ="⚠️To show movie ratings, please add an OMDb key in the MubiScore options page!⚠️"
-  div.appendChild(warning)
+  warning.innerText =
+    "⚠️To show movie ratings, please add an OMDb key in the MubiScore options page!⚠️";
+  div.appendChild(warning);
   hero.querySelector("p").appendChild(div);
 }
 

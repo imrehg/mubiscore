@@ -1,24 +1,35 @@
 <!DOCTYPE html>
 <html>
-<head>
- <title>Mubi Score</title>
- <style>
-   #iconlicense { padding-top: 20px; }
- </style>
-</head>
-<body>
+  <head>
+    <title>Mubi Score</title>
+    <style>
+      #iconlicense {
+        padding-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <label>
+      <input type="text" id="apikey" /> OMDB API Key (get it from
+      <a href="https://www.omdbapi.com/apikey.aspx">here</a>)
+    </label>
 
-  <label>
-    <input type="text" id="apikey"> OMDB API Key (get it from <a href="https://www.omdbapi.com/apikey.aspx">here</a>)
-  </label>
+    <div id="status"></div>
+    <button id="save">Save</button>
 
-  <div id="status"></div>
-  <button id="save">Save</button>
-
-
-  <script type="application/javascript" src="browser-polyfill.js"></script>
-  <script type="application/javascript" src="options.js"></script>
-  <div id="iconlicense">Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
-
-</body>
+    <script type="application/javascript" src="browser-polyfill.js"></script>
+    <script type="application/javascript" src="options.js"></script>
+    <div id="iconlicense">
+      Icon made by
+      <a href="http://www.freepik.com" title="Freepik">Freepik</a> from
+      <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      is licensed by
+      <a
+        href="http://creativecommons.org/licenses/by/3.0/"
+        title="Creative Commons BY 3.0"
+        target="_blank"
+        >CC 3.0 BY</a
+      >
+    </div>
+  </body>
 </html>
