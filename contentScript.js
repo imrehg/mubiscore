@@ -1,11 +1,15 @@
 "use strict";
 
 function main() {
-  var next_button = document.querySelector("div.film-of-the-days-swiper-button-next");
+  var next_button = document.querySelector(
+    "div.film-of-the-days-swiper-button-next"
+  );
   if (next_button) {
     next_button.onclick = process;
   }
-  var prev_button = document.querySelector("div.film-of-the-days-swiper-button-prev");
+  var prev_button = document.querySelector(
+    "div.film-of-the-days-swiper-button-prev"
+  );
   if (prev_button) {
     prev_button.onclick = process;
   }
@@ -23,9 +27,9 @@ function process() {
 function parseTile(tile) {
   const titleHeader = tile.querySelector("div > h3");
   const title = titleHeader ? titleHeader.innerText : undefined;
-  const year = tile.querySelector(
-    "div > div > span:nth-child(3)"
-  ).innerText.trim();
+  const year = tile
+    .querySelector("div > div > span:nth-child(3)")
+    .innerText.trim();
   return { title: title, year: year };
 }
 
@@ -83,7 +87,7 @@ function processMovieData(localData, moviekey, title, year, apikey, item) {
               .set(ratingStored)
               .then(setItem(moviekey), onError);
             showRating(result.Ratings, item);
-          } else{
+          } else {
             // No rating returned, store that fact
             var ratingStored = {};
             ratingStored[moviekey] = null;
@@ -129,7 +133,7 @@ function showRating(ratings, item) {
   if (ratings !== null) {
     if (item.querySelector("div.ratings")) {
       // Already seem to have rating
-      return
+      return;
     }
     var div = document.createElement("div");
     div.setAttribute("class", "ratings");
