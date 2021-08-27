@@ -1,6 +1,18 @@
 "use strict";
 
 function main() {
+  var next_button = document.querySelector("div.film-of-the-days-swiper-button-next");
+  if (next_button) {
+    next_button.onclick = process;
+  }
+  var prev_button = document.querySelector("div.film-of-the-days-swiper-button-prev");
+  if (prev_button) {
+    prev_button.onclick = process;
+  }
+  process();
+}
+
+function process() {
   browser.storage.sync
     .get({
       apikey: "",
@@ -8,31 +20,29 @@ function main() {
     .then(setupQueries);
 }
 
-function parseArticle(article) {
-  const titleHeader = article.querySelector("div > div > h2");
+function parseTile(tile) {
+  const titleHeader = tile.querySelector("div > h3");
   const title = titleHeader ? titleHeader.innerText : undefined;
-  const countryYear = article.querySelector(
-    "div > div > h3 > span:nth-child(2)"
-  );
-  const year = countryYear
-    ? countryYear.innerText.split(",")[1].trim()
-    : undefined;
+  const year = tile.querySelector(
+    "div > div > span:nth-child(3)"
+  ).innerText.trim();
   return { title: title, year: year };
 }
 
 function setupQueries(storageData) {
   const apikey = storageData.apikey;
   if (apikey !== "") {
-    const all_articles = document.getElementsByTagName("article");
-    for (var i = 0, max = all_articles.length; i < max; i++) {
-      const item = all_articles[i];
-      const film = parseArticle(item);
+    const all_tiles = document.getElementsByClassName("film-tile-inner");
+    for (var i = 0, max = all_tiles.length; i < max; i++) {
+      const item = all_tiles[i];
+      const film = parseTile(item);
       if (film.title && film.year) {
         getRating(film.title, film.year, item, apikey, false);
       }
     }
   } else {
-    showWarning();
+    // Can't reliably find a way yet where to present this warning
+    // showWarning();
   }
 }
 
@@ -73,6 +83,14 @@ function processMovieData(localData, moviekey, title, year, apikey, item) {
               .set(ratingStored)
               .then(setItem(moviekey), onError);
             showRating(result.Ratings, item);
+          } else{
+            // No rating returned, store that fact
+            var ratingStored = {};
+            ratingStored[moviekey] = null;
+            browser.storage.local
+              .set(ratingStored)
+              .then(setEmpty(moviekey), onError);
+            // Since no rating, no need to display anything
           }
         } else if (xhr.status === 401) {
           console.error("OMDb API key seems to be invalid...");
@@ -109,9 +127,12 @@ function getRatingHeader() {
 
 function showRating(ratings, item) {
   if (ratings !== null) {
+    if (item.querySelector("div.ratings")) {
+      // Already seem to have rating
+      return
+    }
     var div = document.createElement("div");
     div.setAttribute("class", "ratings");
-    console.log(document.documentElement.lang);
     const header = getRatingHeader();
     if (header) {
       div.appendChild(header);
@@ -130,27 +151,30 @@ function showRating(ratings, item) {
       rating.appendChild(value);
       div.appendChild(rating);
     }
-    item.querySelector("p").appendChild(div);
+    item.querySelector("div:nth-child(2)").appendChild(div);
   }
 }
 
 function setItem(movie) {
   console.log(`Rating saved OK: ${movie}`);
 }
+function setEmpty(movie) {
+  console.log(`Empty rating saved: ${movie}`);
+}
 function onError(error) {
   console.error(error);
 }
 
-function showWarning() {
-  const hero = document.getElementsByTagName("article")[0];
-  var div = document.createElement("div");
-  div.setAttribute("class", "warning");
-  var warning = document.createElement("span");
-  warning.setAttribute("class", "warning");
-  warning.innerText =
-    "⚠️To show movie ratings, please add an OMDb key in the MubiScore options page!⚠️";
-  div.appendChild(warning);
-  hero.querySelector("p").appendChild(div);
-}
+// function showWarning() {
+//   const hero = document.getElementsByTagName("article")[0];
+//   var div = document.createElement("div");
+//   div.setAttribute("class", "warning");
+//   var warning = document.createElement("span");
+//   warning.setAttribute("class", "warning");
+//   warning.innerText =
+//     "⚠️To show movie ratings, please add an OMDb key in the MubiScore options page!⚠️";
+//   div.appendChild(warning);
+//   hero.querySelector("p").appendChild(div);
+// }
 
 main();
