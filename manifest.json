@@ -1,6 +1,6 @@
 {
   "name": "Mubi Score",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "author": "Gergely Imreh",
   "developer": {
     "name": "Gergely Imreh",
@@ -20,7 +20,7 @@
   "applications": {
     "gecko": {
       "id": "mubiscore@imreh.net",
-      "strict_min_version": "52.0"
+      "strict_min_version": "57.0"
     }
   },
   "content_scripts": [
