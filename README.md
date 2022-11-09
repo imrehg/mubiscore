@@ -1,7 +1,14 @@
 # MubiScore
 
-Chrome extension to add movie score results the Mubi "Now Showing" page,
+Browser extension to add movie score results the Mubi "Now Showing" page,
 based on data from [The Open Movie Database](https://www.omdbapi.com/).
+
+Available from:
+
+* [Chrome Web Store](https://chrome.google.com/webstore/detail/mubi-score/amdphkoacncjbkidcehbkhikmapncbpa)
+* [Firefox Add-Ons](https://addons.mozilla.org/en-US/firefox/addon/mubi-score/)
+
+or installed from source in this repository.
 
 ## Usage
 
